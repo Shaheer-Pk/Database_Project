@@ -222,7 +222,7 @@ INSERT INTO Staff (First_Name, Last_Name, Title, Email, Phone_Number, Salary, Re
 INSERT INTO Job_Post (Location_Name, StaffID) VALUES
 ('Operations Centre', 2),
 ('Cinema Block',      3),
-('HR Office',         4),job_post
+('HR Office',         4),
 ('Male Washrooms',    5),
 ('Female Washrooms',  6);
 
