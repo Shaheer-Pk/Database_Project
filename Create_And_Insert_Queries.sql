@@ -124,22 +124,36 @@ CREATE TABLE Bowling_Booking (
         ON DELETE RESTRICT
 );
 
+CREATE TABLE Food_Owner(
+	Food_OwnerID INT PRIMARY KEY AUTO_INCREMENT,
+    First_Name VARCHAR(50),
+    Last_Name VARCHAR(50),
+    Email VARCHAR(100),
+    Phone VARCHAR(20)
+);
+
+
 CREATE TABLE Food_Stalls (
-    FoodStallID INT PRIMARY KEY AUTO_INCREMENT,
-    Owner_Name VARCHAR(100),
+    Food_StallID INT PRIMARY KEY AUTO_INCREMENT,
+    Staff_Name VARCHAR(100),
     Rent DECIMAL(10,2),
     Type VARCHAR(50),
+    Establish_Date DATE,
     Opening_Time TIME,
-    Closing_Time TIME
+    Closing_Time TIME,
+    Food_OwnerID INT,
+    CONSTRAINT fk_foodstall_owner 
+        FOREIGN KEY (Food_OwnerID) REFERENCES Food_Owner(Food_OwnerID) 
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE Food_Payment (
-    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+    Food_PaymentID INT PRIMARY KEY AUTO_INCREMENT,
     Amount DECIMAL(10,2),
     Payment_Time DATETIME,
-    FoodStallID INT,
+    Food_StallID INT,
     CONSTRAINT fk_fp_stall 
-        FOREIGN KEY (FoodStallID) REFERENCES Food_Stalls(FoodStallID) 
+        FOREIGN KEY (Food_StallID) REFERENCES Food_Stalls(Food_StallID) 
         ON DELETE RESTRICT
 );
 
@@ -312,32 +326,45 @@ INSERT INTO Ticketing (Amount, CardID, ScreeningID) VALUES
 (650.00,  11, 11),
 (700.00,  12, 12);
 
+INSERT INTO Food_Owner (First_Name, Last_Name, Email, Phone) VALUES
+('Zubair', 'Khan', 'zubair.khan@email.com', '03214567890'),
+('Sarah', 'Ahmed', 'sarah.piz@email.com', '03224567891'),
+('Bilal', 'Dar', 'bilal.desi@email.com', '03234567892'),
+('Mona', 'Ijaz', 'mona.ice@email.com', '03244567893'),
+('Junaid', 'Ali', 'junaid.j@email.com', '03254567894'),
+('Hassan', 'Raza', 'hassan.b@email.com', '03264567895'),
+('Waqas', 'Malik', 'waqas.s@email.com', '03274567896'),
+('Esha', 'Noor', 'esha.w@email.com', '03284567897'),
+('Kamran', 'Shah', 'kamran.n@email.com', '03294567898'),
+('Asma', 'Bibi', 'asma.c@email.com', '03314567899'),
+('Taimoor', 'Baig', 'taimoor.g@email.com', '03324567800'),
+('Zainab', 'Saeed', 'zainab.s@email.com', '03334567801');
 
-INSERT INTO Food_Stalls (Owner_Name, Rent, Type, Opening_Time, Closing_Time) VALUES
-('Khan Fast Food',     15000.00, 'Fast Food', '09:00:00', '22:00:00'),
-('Pizza Palace',       18000.00, 'Pizza',     '10:00:00', '23:00:00'),
-('Desi Bites',         12000.00, 'Desi',      '08:00:00', '21:00:00'),
-('Ice Cream World',    8000.00,  'Dessert',   '10:00:00', '22:00:00'),
-('Juice Bar',          7000.00,  'Beverages', '09:00:00', '21:00:00'),
-('Burger Hub',         14000.00, 'Fast Food', '10:00:00', '22:00:00'),
-('Shawarma Corner',    11000.00, 'Fast Food', '11:00:00', '23:00:00'),
-('Waffle House',       9000.00,  'Dessert',   '09:30:00', '21:30:00'),
-('Noodle Street',      13000.00, 'Chinese',   '11:00:00', '22:00:00'),
-('Chai Dhaba',         6000.00,  'Beverages', '08:00:00', '20:00:00'),
-('Grill Station',      16000.00, 'BBQ',       '12:00:00', '23:00:00'),
-('Snack Zone',         5000.00,  'Snacks',    '09:00:00', '22:00:00');
+INSERT INTO Food_Stalls (Staff_Name, Rent, Type, Establish_Date, Opening_Time, Closing_Time, Food_OwnerID) VALUES
+('Khan Fast Food', 15000.00, 'Fast Food', '2024-01-01', '09:00:00', '22:00:00', 1),
+('Pizza Palace', 18000.00, 'Pizza', '2024-01-05', '10:00:00', '23:00:00', 2),
+('Desi Bites', 12000.00, 'Desi', '2024-01-10', '08:00:00', '21:00:00', 3),
+('Ice Cream World', 8000.00, 'Dessert', '2024-01-15', '10:00:00', '22:00:00', 4),
+('Juice Bar', 7000.00, 'Beverages', '2024-01-20', '09:00:00', '21:00:00', 5),
+('Burger Hub', 14000.00, 'Fast Food', '2024-01-25', '10:00:00', '22:00:00', 6),
+('Shawarma Corner', 11000.00, 'Fast Food', '2024-02-01', '11:00:00', '23:00:00', 7),
+('Waffle House', 9000.00, 'Dessert', '2024-02-05', '09:30:00', '21:30:00', 8),
+('Noodle Street', 13000.00, 'Chinese', '2024-02-10', '11:00:00', '22:00:00', 9),
+('Chai Dhaba', 6000.00, 'Beverages', '2024-02-15', '08:00:00', '20:00:00', 10),
+('Grill Station', 16000.00, 'BBQ', '2024-02-20', '12:00:00', '23:00:00', 11),
+('Snack Zone', 5000.00, 'Snacks', '2024-02-25', '09:00:00', '22:00:00', 12);
 
 
-INSERT INTO Food_Payment (Amount, Payment_Time, FoodStallID) VALUES
+INSERT INTO Food_Payment (Amount, Payment_Time, Food_StallID) VALUES
 (2500.00, '2024-03-01 12:30:00', 1),
 (3200.00, '2024-03-01 19:00:00', 2),
 (1800.00, '2024-03-02 13:00:00', 3),
 (1200.00, '2024-03-02 15:30:00', 4),
-(900.00,  '2024-03-03 11:00:00', 5),
+(900.00, '2024-03-03 11:00:00', 5),
 (2100.00, '2024-03-03 18:00:00', 6),
 (1700.00, '2024-03-04 20:00:00', 7),
 (1400.00, '2024-03-04 14:30:00', 8),
 (2300.00, '2024-03-05 19:30:00', 9),
-(800.00,  '2024-03-05 10:00:00', 10),
+(800.00, '2024-03-05 10:00:00', 10),
 (3500.00, '2024-03-06 21:00:00', 11),
-(600.00,  '2024-03-06 16:00:00', 12);
+(600.00, '2024-03-06 16:00:00', 12);
