@@ -184,7 +184,8 @@ Call GetCustomersWithNoTransactions();
        fs.Type AS Stall_Type,
        ROUND(((SUM(fp.Amount) - fs.Rent) / SUM(fp.Amount)) * 100 , 2 ) AS Profit_Margin
 FROM Food_Stalls fs
-JOIN Food_Payment fp ON fs.Food_StallID = fp.Food_StallID
+JOIN Food_Payment fp 
+ON fs.Food_StallID = fp.Food_StallID
 JOIN food_owner fo ON fo.Food_OwnerID =fs.Food_OwnerID
 GROUP BY fs.Food_StallID, concat(fo.First_Name," ", fo.Last_Name)
 ORDER BY Profit_Margin DESC LIMIT 1;
@@ -194,6 +195,7 @@ ORDER BY Profit_Margin DESC LIMIT 1;
 	CREATE VIEW Customer_Spending AS
 SELECT 
     c.CustomerID as CustomerID,
+	c.Type as Customer_Type,
     CONCAT(c.First_Name, ' ', c.Last_Name) AS Name,
     SUM(IFNULL(cp.Amount,0) + IFNULL(t.Amount,0) + IFNULL(b.Amount,0)) AS Total_Spending
 FROM Customer c
