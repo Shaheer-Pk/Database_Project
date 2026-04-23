@@ -71,3 +71,61 @@ GROUP BY Stall_Name,
 		Rent_Monthly_Rate
 		
 ORDER BY Stall_Revenue;
+
+-- 5) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
+	SELECT concat(fo.First_Name," ", fo.Last_Name) AS Stall_Owner_Name,
+       fs.Type AS Stall_Type,
+       ROUND(((SUM(fp.Amount) - fs.Rent) / SUM(fp.Amount)) * 100 , 2 ) AS Profit_Margin
+FROM Food_Stalls fs
+JOIN Food_Payment fp ON fs.Food_StallID = fp.Food_StallID
+JOIN food_owner fo ON fo.Food_OwnerID =fs.Food_OwnerID
+GROUP BY fs.Food_StallID, concat(fo.First_Name," ", fo.Last_Name)
+ORDER BY Profit_Margin DESC LIMIT 1;
+
+-- 6)
+-- A view that lists customers total spending across bowling, cinema and rides
+	CREATE VIEW Customer_Spending AS
+SELECT 
+    c.CustomerID as CustomerID,
+    CONCAT(c.First_Name, ' ', c.Last_Name) AS Name,
+    SUM(IFNULL(cp.Amount,0) + IFNULL(t.Amount,0) + IFNULL(b.Amount,0)) AS Total_Spending
+FROM Customer c
+JOIN Card cd ON c.CustomerID = cd.CustomerID
+LEFT JOIN Card_Payment cp ON cd.CardID = cp.CardID
+LEFT JOIN Ticketing t ON cd.CardID = t.CardID
+LEFT JOIN Bowling_Booking b ON cd.CardID = b.CardID
+GROUP BY c.CustomerID; 
+
+-- Query which generates comparison  between which Customer Type brings more revenue
+ SELECT 
+    Customer_Type,
+    SUM(Total_Spending) AS Total_Revenue,
+    COUNT(CustomerID) AS Total_Customers,
+    ROUND(AVG(Total_Spending), 2) AS Avg_Spending
+FROM Customer_Spending
+GROUP BY Customer_Type;
+
+-- 7)
+-- A Query that returns Peak Hour at Cinema and Tickets Sold across all Halls
+	SELECT HOUR(sc.Screening_time) AS Peak_Hour,
+			COUNT(t.TicketID) AS Tickets_Sold
+FROM Screening sc JOIN Ticketing t 
+ON sc.ScreeningID = t.ScreeningID
+GROUP BY HOUR(sc.Screening_time)
+ORDER BY count(t.TicketID) DESC
+LIMIT 1;
+
+--8)
+-- Top 5 Movie Screening That Generated The highest revenue during a specific month such as 2024 march
+	SELECT 
+    m.Title as Title,
+    COUNT(t.TicketID) AS Tickets_Sold,
+    SUM(t.Amount) AS Revenue
+FROM Movie m
+JOIN Screening sc ON m.MovieID = sc.MovieID
+JOIN Ticketing t ON sc.ScreeningID = t.ScreeningID
+WHERE DATE_FORMAT(sc.Screening_Time, '%Y-%m') = '2024-03'
+GROUP BY m.MovieID, m.Title
+ORDER BY Revenue DESC
+LIMIT 5;
+
