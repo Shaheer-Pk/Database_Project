@@ -103,38 +103,22 @@ SELECT ROUND(
 
 -- 6)
 -- Description:
--- Find what module has each customer spent most money on
+-- Finds all the food stalls that are available in the given time
 
-
-DROP VIEW IF EXISTS Module_Spending;
-
--- Store each module spending for every customer in this view for later
-CREATE VIEW Module_Spending AS
-SELECT
-	CustomerID,
-	CONCAT(Customer.First_Name, " ", Customer.Last_Name) AS Full_Name,
-    SUM(Card_Payment.Amount) AS Ride_Spendings,
-    SUM(Ticketing.Amount) AS Movie_Spendings,
-    SUM(Bowling_Booking.Amount) AS Bowling_Spendings
-FROM Customer 
-INNER JOIN Card USING (CustomerID)
-INNER JOIN Card_Payment USING (CardID)
-INNER JOIN Ticketing USING (CardID)
-INNER JOIN Bowling_Booking USING (CardID)
-GROUP BY CustomerID;
-
--- Find what module did each customer spend on the most
-SELECT
-	CustomerID,
-    Full_Name,
-    (
+DELIMITER //
+CREATE PROCEDURE GetAvailableFoodStalls(IN CurrentTime TIME)
+BEGIN
+	SELECT Food_StallID, `Name`, (
 		CASE
-			WHEN Ride_Spendings > Movie_Spendings AND Ride_Spendings > Bowling_Spendings THEN "Rides"
-            WHEN Movie_Spendings > Bowling_Spendings THEN "Movies"
-            ELSE "Bowling"
+			WHEN CurrentTime BETWEEN Opening_Time AND Closing_Time THEN "Available"
+            ELSE "Unavailable"
 		END
-    ) AS Module_Spent_Most_On
-FROM Module_Spending;
+    ) AS `Status`
+    FROM Food_Stalls;
+END//
+DELIMITER ;
+
+CALL GetAvailableFoodStalls("21:00:00");
 
 -- 7 Compare Food Stall Rent to Food Stall Revenue form most recent month, then suggest whether rent should be increased or decreased
 SELECT fs.Food_StallID,fs.Name as Name,SUM(Amount) as Revenue,Rent,
@@ -238,3 +222,19 @@ WHERE DATE_FORMAT(sc.Screening_Time, '%Y-%m') = '2024-03'
 GROUP BY m.MovieID, m.Title
 ORDER BY Revenue DESC
 LIMIT 5;
+
+-- 13)
+-- Description: Get all the upcoming movies at the given date time
+
+DELIMITER //
+CREATE PROCEDURE GetUpcomingDayScreening(IN CurrentDatetime DATETIME)
+BEGIN
+	SELECT Movie.Title, HallID, Screening_Time
+    FROM Screening
+    INNER JOIN Movie USING (MovieID)
+    WHERE CurrentDatetime < Screening.Screening_Time
+    AND DATE(CurrentDateTime) = DATE(Screening.Screening_Time);
+END//
+DELIMITER ;
+
+CALL GetUpcomingDayScreening("2024-03-01 10:00:00");
