@@ -179,7 +179,7 @@ DELIMITER ;
 Call GetCustomersWithNoTransactions();
 
 
--- 9) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
+-- 9) Food Stall that has generated the maximum profit margin along with it's type and  Owner detail.
 	SELECT concat(fo.First_Name," ", fo.Last_Name) AS Stall_Owner_Name,
        fs.Type AS Stall_Type,
        ROUND(((SUM(fp.Amount) - fs.Rent) / SUM(fp.Amount)) * 100 , 2 ) AS Profit_Margin
@@ -191,7 +191,7 @@ GROUP BY fs.Food_StallID, concat(fo.First_Name," ", fo.Last_Name)
 ORDER BY Profit_Margin DESC LIMIT 1;
 
 -- 10)
--- A view that lists customers total spending across bowling, cinema and rides
+-- A view that lists a customers total spending across bowling, cinema and rides.
 	CREATE VIEW Customer_Spending AS
 SELECT 
     c.CustomerID as CustomerID,
@@ -205,7 +205,7 @@ LEFT JOIN Ticketing t ON cd.CardID = t.CardID
 LEFT JOIN Bowling_Booking b ON cd.CardID = b.CardID
 GROUP BY c.CustomerID; 
 
--- Query which generates comparison  between which Customer Type brings more revenue
+-- Query which generates comparison  between which Customer Type brings more revenue and the average spending per customer of that type
  SELECT 
     Customer_Type,
     SUM(Total_Spending) AS Total_Revenue,
@@ -215,7 +215,7 @@ FROM Customer_Spending
 GROUP BY Customer_Type;
 
 -- 11)
--- A Query that returns Peak Hour at Cinema and Tickets Sold across all Halls
+-- A Query that returns Peak Hour at  the Cinema and Tickets Sold across all Halls
 	SELECT HOUR(sc.Screening_time) AS Peak_Hour,
 			COUNT(t.TicketID) AS Tickets_Sold
 FROM Screening sc 
