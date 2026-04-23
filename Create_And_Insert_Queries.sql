@@ -135,7 +135,7 @@ CREATE TABLE Food_Owner(
 
 CREATE TABLE Food_Stalls (
     Food_StallID INT PRIMARY KEY AUTO_INCREMENT,
-    Staff_Name VARCHAR(100),
+    Name VARCHAR(100),
     Rent DECIMAL(10,2),
     Type VARCHAR(50),
     Establish_Date DATE,
@@ -340,7 +340,7 @@ INSERT INTO Food_Owner (First_Name, Last_Name, Email, Phone) VALUES
 ('Taimoor', 'Baig', 'taimoor.g@email.com', '03324567800'),
 ('Zainab', 'Saeed', 'zainab.s@email.com', '03334567801');
 
-INSERT INTO Food_Stalls (Staff_Name, Rent, Type, Establish_Date, Opening_Time, Closing_Time, Food_OwnerID) VALUES
+INSERT INTO Food_Stalls (Name, Rent, Type, Establish_Date, Opening_Time, Closing_Time, Food_OwnerID) VALUES
 ('Khan Fast Food', 15000.00, 'Fast Food', '2024-01-01', '09:00:00', '22:00:00', 1),
 ('Pizza Palace', 18000.00, 'Pizza', '2024-01-05', '10:00:00', '23:00:00', 2),
 ('Desi Bites', 12000.00, 'Desi', '2024-01-10', '08:00:00', '21:00:00', 3),
