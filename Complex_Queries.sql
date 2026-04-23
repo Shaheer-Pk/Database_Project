@@ -46,7 +46,7 @@ HAVING count(*) > 1 AND sum(cp.Amount) > 500;
 
 -- 4)
 -- A view to find food stalls of fast food type
-DROP VIEW fastFoodStall;		-- To drop the view and change it
+DROP VIEW IF EXISTS fastFoodStall;		-- To drop the view and change it
 
 CREATE VIEW fastFoodStall AS
 SELECT fs.Food_StallID, fs.Food_OwnerID, fs.Name, fs.Rent AS Stall_Rent, fs.Type AS Stall_Type, fs.Establish_Date
