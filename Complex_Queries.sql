@@ -72,7 +72,72 @@ GROUP BY Stall_Name,
 		
 ORDER BY Stall_Revenue;
 
--- 5) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
+
+-- 5)
+-- Description:
+-- Calculates the total revenue of the entire park excluding revenue of the food stalls
+
+-- Card payments
+-- tickets
+-- Food stalls rent
+-- Bowling booking
+
+SELECT ROUND(
+	( -- Food stall rent income
+		SELECT SUM(Rent * TIMESTAMPDIFF(MONTH, Establish_Date, CURRENT_DATE()))
+		FROM Food_Stalls
+	) + 
+    ( -- Movie income 
+		SELECT SUM(Amount)
+		FROM Ticketing
+    ) +
+    ( -- Ride income
+		SELECT SUM(Amount)
+		FROM Card_Payment
+    ) +
+    ( -- Bowling income
+		SELECT SUM(Amount)
+        FROM Bowling_Booking
+    )
+, 2) AS Total_Income;
+
+-- 6)
+-- Description:
+-- Find what module has each customer spent most money on
+
+
+DROP VIEW IF EXISTS Module_Spending;
+
+-- Store each module spending for every customer in this view for later
+CREATE VIEW Module_Spending AS
+SELECT
+	CustomerID,
+	CONCAT(Customer.First_Name, " ", Customer.Last_Name) AS Full_Name,
+    SUM(Card_Payment.Amount) AS Ride_Spendings,
+    SUM(Ticketing.Amount) AS Movie_Spendings,
+    SUM(Bowling_Booking.Amount) AS Bowling_Spendings
+FROM Customer 
+INNER JOIN Card USING (CustomerID)
+INNER JOIN Card_Payment USING (CardID)
+INNER JOIN Ticketing USING (CardID)
+INNER JOIN Bowling_Booking USING (CardID)
+GROUP BY CustomerID;
+
+-- Find what module did each customer spend on the most
+SELECT
+	CustomerID,
+    Full_Name,
+    (
+		CASE
+			WHEN Ride_Spendings > Movie_Spendings AND Ride_Spendings > Bowling_Spendings THEN "Rides"
+            WHEN Movie_Spendings > Bowling_Spendings THEN "Movies"
+            ELSE "Bowling"
+		END
+    ) AS Module_Spent_Most_One
+FROM Module_Spending;
+
+
+-- 6) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
 	SELECT concat(fo.First_Name," ", fo.Last_Name) AS Stall_Owner_Name,
        fs.Type AS Stall_Type,
        ROUND(((SUM(fp.Amount) - fs.Rent) / SUM(fp.Amount)) * 100 , 2 ) AS Profit_Margin
@@ -82,7 +147,7 @@ JOIN food_owner fo ON fo.Food_OwnerID =fs.Food_OwnerID
 GROUP BY fs.Food_StallID, concat(fo.First_Name," ", fo.Last_Name)
 ORDER BY Profit_Margin DESC LIMIT 1;
 
--- 6)
+-- 7)
 -- A view that lists customers total spending across bowling, cinema and rides
 	CREATE VIEW Customer_Spending AS
 SELECT 
@@ -105,7 +170,7 @@ GROUP BY c.CustomerID;
 FROM Customer_Spending
 GROUP BY Customer_Type;
 
--- 7)
+-- 8)
 -- A Query that returns Peak Hour at Cinema and Tickets Sold across all Halls
 	SELECT HOUR(sc.Screening_time) AS Peak_Hour,
 			COUNT(t.TicketID) AS Tickets_Sold
@@ -115,7 +180,7 @@ GROUP BY HOUR(sc.Screening_time)
 ORDER BY count(t.TicketID) DESC
 LIMIT 1;
 
---8)
+--9)
 -- Top 5 Movie Screening That Generated The highest revenue during a specific month such as 2024 march
 	SELECT 
     m.Title as Title,
