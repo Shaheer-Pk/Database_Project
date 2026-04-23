@@ -133,11 +133,53 @@ SELECT
             WHEN Movie_Spendings > Bowling_Spendings THEN "Movies"
             ELSE "Bowling"
 		END
-    ) AS Module_Spent_Most_One
+    ) AS Module_Spent_Most_On
 FROM Module_Spending;
 
+-- 7 Compare Food Stall Rent to Food Stall Revenue form most recent month, then suggest whether rent should be increased or decreased
+SELECT fs.Food_StallID,fs.Name as Name,SUM(Amount) as Revenue,Rent,
+		(	
+			CASE 
+				WHEN SUM(Amount) > fs.Rent * 1.5 THEN "Increase"
+                WHEN SUM(Amount) < fs.Rent * 1.5 THEN "Decrease"
+                ELSE "Dont Change"
+		END
+        ) AS Suggestion
+FROM Food_Stalls as fs
+INNER JOIN Food_Payment as fp USING (Food_StallID)
 
--- 6) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
+WHERE (MONTH(fp.Payment_Time),Year(fp.Payment_Time)) =
+							(
+								SELECT MAX(MONTH(Payment_Time)),MAX(YEAR(Payment_Time)) FROM Food_Payment as fp2
+								WHERE fp.Food_StallID = fp2.Food_StallID
+							)
+
+GROUP BY fp.Food_StallID,MONTH(fp.Payment_Time), YEAR(fp.Payment_Time);
+	
+-- 8- Stored Procedure- Give Customers who are registered but did not make any transactions-- Use for Marketing ✌
+
+DROP PROCEDURE GetCustomersWithNoTransactions;
+DELIMITER //
+CREATE PROCEDURE GetCustomersWithNoTransactions()
+BEGIN
+SELECT c.CustomerID , CONCAT(c.First_Name, " ", c.Last_Name) AS "Full Name" FROM Customer c
+LEFT JOIN Card ca ON ca.CustomerID = c.CustomerID
+LEFT JOIN Card_Payment cp ON ca.CardID = cp.CardID
+LEFT JOIN Ticketing t ON ca.CardID = t.CardID
+LEFT JOIN Bowling_Booking b ON ca.CardID = b.CardID
+GROUP BY CustomerID, c.First_Name,c.Last_Name
+
+Having SUM(cp.Amount) IS Null
+AND SUM(t.Amount) IS Null
+AND SUM(b.Amount) IS Null ;
+
+END //
+DELIMITER ;
+
+Call GetCustomersWithNoTransactions();
+
+
+-- 9) Food Stall that generated has the maximum profit margin along with it's type and  Owner details
 	SELECT concat(fo.First_Name," ", fo.Last_Name) AS Stall_Owner_Name,
        fs.Type AS Stall_Type,
        ROUND(((SUM(fp.Amount) - fs.Rent) / SUM(fp.Amount)) * 100 , 2 ) AS Profit_Margin
@@ -147,7 +189,7 @@ JOIN food_owner fo ON fo.Food_OwnerID =fs.Food_OwnerID
 GROUP BY fs.Food_StallID, concat(fo.First_Name," ", fo.Last_Name)
 ORDER BY Profit_Margin DESC LIMIT 1;
 
--- 7)
+-- 10)
 -- A view that lists customers total spending across bowling, cinema and rides
 	CREATE VIEW Customer_Spending AS
 SELECT 
@@ -170,17 +212,18 @@ GROUP BY c.CustomerID;
 FROM Customer_Spending
 GROUP BY Customer_Type;
 
--- 8)
+-- 11)
 -- A Query that returns Peak Hour at Cinema and Tickets Sold across all Halls
 	SELECT HOUR(sc.Screening_time) AS Peak_Hour,
 			COUNT(t.TicketID) AS Tickets_Sold
-FROM Screening sc JOIN Ticketing t 
+FROM Screening sc 
+JOIN Ticketing t 
 ON sc.ScreeningID = t.ScreeningID
 GROUP BY HOUR(sc.Screening_time)
 ORDER BY count(t.TicketID) DESC
 LIMIT 1;
 
---9)
+-- 12)
 -- Top 5 Movie Screening That Generated The highest revenue during a specific month such as 2024 march
 	SELECT 
     m.Title as Title,
@@ -193,4 +236,3 @@ WHERE DATE_FORMAT(sc.Screening_Time, '%Y-%m') = '2024-03'
 GROUP BY m.MovieID, m.Title
 ORDER BY Revenue DESC
 LIMIT 5;
-
