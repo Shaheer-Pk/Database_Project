@@ -158,8 +158,8 @@ CREATE TABLE Food_Payment (
 );
 
 INSERT INTO Login (Name, Email, Password, Created_at) VALUES
-('Tariq Mahmood',   'tariq.mahmood@park.com',   'x8Kp21aQ', '2024-01-10 09:00:00'),
-('Ayesha Siddiqui', 'ayesha.siddiqui@park.com', 'mN92pQw1', '2024-01-12 10:15:00'),
+('Muhammad Saad',   'm.saad@park.com',   'x8Kp21aQ', '2024-01-10 09:00:00'),
+('Shahzaib Nazir', 'm.shahzaib@park.com', 'mN92pQw1', '2024-01-12 10:15:00'),
 ('Rabia Nawaz',     'rabia.nawaz@park.com',     'vT55zLm9', '2024-01-14 11:30:00'),
 ('Noman Aslam',     'noman.aslam@park.com',     'cR77uXk3', '2024-01-16 08:45:00'),
 ('Hamza Ijaz',      'hamza.ijaz@park.com',      'pL10qWz8', '2024-02-01 13:00:00'),
@@ -170,8 +170,8 @@ INSERT INTO Login (Name, Email, Password, Created_at) VALUES
 ('Amna Ghafoor',    'amna.ghafoor@park.com',    'zX88cVt5', '2024-03-05 15:30:00'),
 ('Rizwan Ali',      'rizwan.ali@park.com',      'nP12kLm9', '2024-03-08 12:45:00'),
 ('Ahmed Raza',      'ahmed.raza@park.com',      'sA44dFg1', '2024-03-12 10:00:00'),
-('Janitor Male',    'male.janitor@park.com',    'mJ21vBn7', '2024-03-13 10:00:00'),
-('Janitor Female',  'female.janitor@park.com',  'fJ88kLp3', '2024-03-13 10:00:00');
+('Khalid Hussain',    'khalid.hussain@park.com',    'mJ21vBn7', '2024-03-13 10:00:00'),
+('Nargis bibi',  'nargis.bibi@park.com',  'fJ88kLp3', '2024-03-13 10:00:00');
 
 
 INSERT INTO Customer (First_Name, Last_Name, Type, Date_of_Birth) VALUES
@@ -207,18 +207,18 @@ INSERT INTO Movie (Title, Rating, Duration) VALUES
 ('Black Panther',           'PG-13', 134),
 ('The Lion King',           'PG',    118),
 ('Dune',                    'PG-13', 155),
-('The Conjuring',          'R',     112);
+('The Conjuring',           'R',     112);
 
 
 INSERT INTO Staff (First_Name, Last_Name, Title, Email, Phone_Number, Salary, Reports_to) VALUES
 -- Management
 ('Muhammad',  'Saad',  'General Manager',    'm.saad@park.com',   '0300-1234567', 150000, NULL),
-('Shahzaib', 'Nazir', 'Operations Manager', 'ayesha.siddiqui@park.com', '0301-2345678', 125000, 1),
+('Shahzaib', 'Nazir', 'Operations Manager', 'm.shahzaib@park.com', '0301-2345678', 125000, 1),
 ('Rabia',  'Nawaz',    'Cinema Manager',     'rabia.nawaz@park.com',     '0303-4567890', 70000, 2),
 ('Noman',  'Aslam',    'HR Officer',         'noman.aslam@park.com',     '0311-2345679', 55000, 1),
 -- Janitors
-('Khalid', 'Hussain', 'Janitor', 'khalid.hussain@park.com', '0309-1111111', 30000, 4),
-('Nargis', 'Bibi',    'Janitor', 'nargis.bibi@park.com',    '0309-2222222', 30000, 4),
+('Khalid', 'Hussain', 'Male Janitor', 'khalid.hussain@park.com', '0309-1111111', 30000, 4),
+('Nargis', 'Bibi',    'Female Janitor', 'nargis.bibi@park.com',    '0309-2222222', 30000, 4),
 -- Ride Operators
 ('Hamza',   'Iqbal',   'Ride Operator', 'hamza.iqbal@park.com',   '0300-0000001', 40000, 2),
 ('Ali',     'Raza',    'Ride Operator', 'ali.raza@park.com',      '0300-0000002', 40000, 2),

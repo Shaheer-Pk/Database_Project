@@ -7,11 +7,10 @@ FROM customer cus
 INNER JOIN Card ca USING (CustomerID)
 WHERE cus.type = "Subscription" 
 AND ca.balance = (SELECT MAX(balance) 
-					FROM Card ca
-                    WHERE ca.points < 500);
+				  FROM Card ca
+                  WHERE ca.points < 500);
 	
     
--- Query with a view
 -- 2)
 -- View that returns info of employees who are not managers
 CREATE VIEW NonManagers AS
